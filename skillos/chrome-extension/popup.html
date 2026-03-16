@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=400" />
+  <title>SkillOS Intelligence</title>
+  <style>
+    /* ── Reset & Base ── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 380px;
+      min-height: 480px;
+      background: #0a0a1a;
+      color: #e0e0e0;
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+      font-size: 12px;
+      overflow-y: auto;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, #0a0a1a 0%, #0d1b2a 100%);
+      border-bottom: 1px solid #30e8bd33;
+    }
+    .header h1 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #30e8bd;
+      letter-spacing: 1.5px;
+    }
+    .header .version {
+      font-size: 10px;
+      color: #30e8bd88;
+    }
+
+    /* ── Stats Row ── */
+    .stats-row {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid #ffffff0a;
+    }
+    .stat-card {
+      flex: 1;
+      background: #242424;
+      border-radius: 6px;
+      padding: 10px 8px;
+      text-align: center;
+      border: 1px solid #ffffff0a;
+    }
+    .stat-card .value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #30e8bd;
+      line-height: 1.2;
+    }
+    .stat-card .label {
+      font-size: 9px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-top: 4px;
+    }
+
+    /* ── Section ── */
+    .section {
+      padding: 12px 16px;
+    }
+    .section-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: #30e8bd;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-title::before {
+      content: "▸";
+      font-size: 10px;
+    }
+
+    /* ── Bar Chart ── */
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bar-label {
+      width: 90px;
+      font-size: 11px;
+      color: #ccc;
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .bar-track {
+      flex: 1;
+      height: 16px;
+      background: #0a2e5c;
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #30e8bd, #20c09a);
+      border-radius: 3px;
+      transition: width 0.4s ease;
+      min-width: 2px;
+    }
+    .bar-count {
+      width: 36px;
+      font-size: 10px;
+      color: #888;
+      text-align: left;
+    }
+    .empty-state {
+      color: #555;
+      font-size: 11px;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    /* ── Current Page ── */
+    .page-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #242424;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      border: 1px solid #ffffff0a;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #555;
+      flex-shrink: 0;
+    }
+    .status-dot.active { background: #30e8bd; box-shadow: 0 0 6px #30e8bd88; }
+    .status-dot.error  { background: #ff4444; }
+    .status-text {
+      font-size: 11px;
+      color: #aaa;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn:active { transform: scale(0.98); }
+    .btn-scan {
+      background: #242424;
+      color: #30e8bd;
+      border: 1px solid #30e8bd44;
+      margin-bottom: 8px;
+    }
+    .btn-sync {
+      background: #30e8bd;
+      color: #000;
+    }
+    .btn-clear {
+      background: transparent;
+      color: #ff4444;
+      font-size: 10px;
+      font-weight: 400;
+      margin-top: 6px;
+      padding: 6px;
+    }
+
+    /* ── Settings ── */
+    .settings-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0 6px;
+      cursor: pointer;
+      color: #666;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: none;
+      background: none;
+      width: 100%;
+      font-family: inherit;
+    }
+    .settings-toggle:hover { color: #999; }
+    .settings-body {
+      display: none;
+      padding-top: 8px;
+    }
+    .settings-body.open { display: block; }
+    .settings-body input {
+      width: 100%;
+      padding: 8px 10px;
+      background: #1a1a2e;
+      border: 1px solid #30e8bd33;
+      border-radius: 4px;
+      color: #e0e0e0;
+      font-family: inherit;
+      font-size: 11px;
+      outline: none;
+      margin-bottom: 8px;
+    }
+    .settings-body input:focus {
+      border-color: #30e8bd;
+    }
+    .btn-save-settings {
+      background: #242424;
+      color: #30e8bd;
+      border: 1px solid #30e8bd33;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: #242424;
+      color: #30e8bd;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 11px;
+      border: 1px solid #30e8bd44;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast.error { color: #ff4444; border-color: #ff444444; }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: #ffffff0a;
+      margin: 4px 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>⬡ SKILLOS INTELLIGENCE</h1>
+    <span class="version">v1.0</span>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="value" id="statJobs">0</div>
+      <div class="label">Jobs Scanned</div>
+    </div>
+    <div class="stat-card">
+      <div class="value" id="statSkills">0</div>
+      <div class="label">Skills Found</div>
+    </div>
+    <div class="stat-card">
+      <div class="value" id="statUpdated">—</div>
+      <div class="label">Last Updated</div>
+    </div>
+  </div>
+
+  <!-- Top Skills -->
+  <div class="section">
+    <div class="section-title">Top Skills Demand</div>
+    <div class="bar-chart" id="barChart">
+      <div class="empty-state">No data yet — visit a job page to start.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Current Page -->
+  <div class="section">
+    <div class="section-title">Current Page</div>
+    <div class="page-status">
+      <div class="status-dot" id="statusDot"></div>
+      <span class="status-text" id="statusText">Checking…</span>
+    </div>
+    <button class="btn btn-scan" id="btnScan">⟐ SCAN PAGE NOW</button>
+    <button class="btn btn-sync" id="btnSync">SYNC TO SKILLOS →</button>
+    <button class="btn btn-clear" id="btnClear">✕ Clear All Data</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Settings -->
+  <div class="section">
+    <button class="settings-toggle" id="settingsToggle">
+      <span>⚙ Settings</span>
+      <span id="settingsArrow">▸</span>
+    </button>
+    <div class="settings-body" id="settingsBody">
+      <input type="url" id="apiUrlInput" placeholder="SkillOS API URL (e.g. https://…)" />
+      <button class="btn-save-settings" id="btnSaveUrl">Save URL</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ── DOM refs ──
+    const $ = (id) => document.getElementById(id);
+    const statJobs    = $("statJobs");
+    const statSkills  = $("statSkills");
+    const statUpdated = $("statUpdated");
+    const barChart    = $("barChart");
+    const statusDot   = $("statusDot");
+    const statusText  = $("statusText");
+    const btnScan     = $("btnScan");
+    const btnSync     = $("btnSync");
+    const btnClear    = $("btnClear");
+    const apiUrlInput = $("apiUrlInput");
+    const btnSaveUrl  = $("btnSaveUrl");
+    const toastEl     = $("toast");
+
+    // ── Toast helper ──
+    function showToast(msg, isError = false) {
+      toastEl.textContent = msg;
+      toastEl.className = "toast show" + (isError ? " error" : "");
+      setTimeout(() => { toastEl.className = "toast"; }, 2500);
+    }
+
+    // ── Render trends ──
+    function renderTrends(trends) {
+      if (!trends || trends.length === 0) {
+        barChart.innerHTML = '<div class="empty-state">No data yet — visit a job page to start.</div>';
+        statSkills.textContent = "0";
+        return;
+      }
+
+      statSkills.textContent = String(trends.length);
+      const top = trends.slice(0, 12);
+      const maxCount = top[0].count;
+
+      barChart.innerHTML = top.map((t) => {
+        const widthPct = Math.max(4, Math.round((t.count / maxCount) * 100));
+        return `
+          <div class="bar-row">
+            <span class="bar-label" title="${t.skill}">${t.skill}</span>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:${widthPct}%"></div>
+            </div>
+            <span class="bar-count">${t.count} (${t.pct}%)</span>
+          </div>`;
+      }).join("");
+    }
+
+    // ── Fetch & render ──
+    function refresh() {
+      chrome.storage.local.get({ skillos_jobs: [] }, (result) => {
+        const jobs = result.skillos_jobs;
+        statJobs.textContent = String(jobs.length);
+
+        if (jobs.length > 0) {
+          const last = jobs[jobs.length - 1];
+          const ago = timeSince(last.timestamp);
+          statUpdated.textContent = ago;
+        } else {
+          statUpdated.textContent = "—";
+        }
+      });
+
+      chrome.runtime.sendMessage({ type: "GET_TRENDS" }, renderTrends);
+    }
+
+    function timeSince(ts) {
+      const sec = Math.floor((Date.now() - ts) / 1000);
+      if (sec < 60) return "just now";
+      if (sec < 3600) return Math.floor(sec / 60) + "m ago";
+      if (sec < 86400) return Math.floor(sec / 3600) + "h ago";
+      return Math.floor(sec / 86400) + "d ago";
+    }
+
+    // ── Check current page ──
+    function checkCurrentPage() {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (!tabs[0]) return;
+        const url = tabs[0].url || "";
+        const supported = ["linkedin.com", "naukri.com", "internshala.com", "unstop.com"];
+        const match = supported.find((s) => url.includes(s));
+
+        if (match) {
+          statusDot.className = "status-dot active";
+          statusText.textContent = `Connected — ${match}`;
+        } else {
+          statusDot.className = "status-dot";
+          statusText.textContent = "Not a supported job page";
+        }
+      });
+    }
+
+    // ── Scan now ──
+    btnScan.addEventListener("click", () => {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (!tabs[0]) return;
+        chrome.scripting.executeScript(
+          { target: { tabId: tabs[0].id }, files: ["content.js"] },
+          () => {
+            showToast("⟐ Scan triggered!");
+            setTimeout(refresh, 3000);
+          }
+        );
+      });
+    });
+
+    // ── Sync ──
+    btnSync.addEventListener("click", () => {
+      btnSync.textContent = "SYNCING…";
+      btnSync.disabled = true;
+      chrome.runtime.sendMessage({ type: "SYNC_TO_SKILLOS" }, (res) => {
+        btnSync.textContent = "SYNC TO SKILLOS →";
+        btnSync.disabled = false;
+        if (res && res.success) {
+          showToast("✓ Synced to SkillOS!");
+        } else {
+          showToast("✕ " + (res?.error || "Sync failed"), true);
+        }
+      });
+    });
+
+    // ── Clear ──
+    btnClear.addEventListener("click", () => {
+      if (confirm("Clear all scraped data?")) {
+        chrome.runtime.sendMessage({ type: "CLEAR_DATA" });
+        showToast("Data cleared");
+        setTimeout(refresh, 500);
+      }
+    });
+
+    // ── Settings ──
+    $("settingsToggle").addEventListener("click", () => {
+      const body = $("settingsBody");
+      const arrow = $("settingsArrow");
+      const isOpen = body.classList.toggle("open");
+      arrow.textContent = isOpen ? "▾" : "▸";
+    });
+
+    btnSaveUrl.addEventListener("click", () => {
+      const url = apiUrlInput.value.trim();
+      if (url) {
+        chrome.storage.sync.set({ skillos_api_url: url }, () => {
+          showToast("✓ API URL saved");
+        });
+      }
+    });
+
+    apiUrlInput.addEventListener("blur", () => {
+      const url = apiUrlInput.value.trim();
+      if (url) {
+        chrome.storage.sync.set({ skillos_api_url: url });
+      }
+    });
+
+    // ── Load saved API URL ──
+    chrome.storage.sync.get("skillos_api_url", (result) => {
+      if (result.skillos_api_url) {
+        apiUrlInput.value = result.skillos_api_url;
+      }
+    });
+
+    // ── Init ──
+    document.addEventListener("DOMContentLoaded", () => {
+      refresh();
+      checkCurrentPage();
+    });
+
+    // Auto-refresh every 4 seconds
+    setInterval(refresh, 4000);
+  </script>
+</body>
+</html>

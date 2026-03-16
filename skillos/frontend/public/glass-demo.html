@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism System Demo</title>
+    <link rel="stylesheet" href="../src/styles/glass-system.css">
+    <style>
+        /* Demo specific styles */
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .color-swatch {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-bottom: 8px;
+        }
+
+        h1,
+        h2 {
+            margin-bottom: 1.5rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="demo-container">
+
+        <!-- Header -->
+        <header class="flex-between mb-4 glass-panel p-6 animate-fade-in">
+            <div>
+                <h1 class="font-2xl font-bold text-gradient">Glass System</h1>
+                <p class="text-muted">High-performance CSS Glassmorphism UI</p>
+            </div>
+            <button class="glass-button">Get Started</button>
+        </header>
+
+        <!-- Colors & Typography -->
+        <section class="animate-fade-in delay-100">
+            <h2 class="font-xl mb-4 text-primary">Typography & Colors</h2>
+            <div class="glass-panel p-6 flex-between">
+                <div>
+                    <h1 class="font-2xl">Heading 1</h1>
+                    <h2 class="font-xl">Heading 2</h2>
+                    <p class="text-muted">This is muted body text for description.</p>
+                    <p class="text-main">This is main body text for reading.</p>
+                </div>
+                <div class="flex-column flex-gap-2">
+                    <div class="flex-center flex-column">
+                        <div class="color-swatch" style="background:var(--color-primary)"></div><span
+                            class="text-xs">Primary</span>
+                    </div>
+                    <div class="flex-center flex-column">
+                        <div class="color-swatch" style="background:var(--color-secondary)"></div><span
+                            class="text-xs">Secondary</span>
+                    </div>
+                    <div class="flex-center flex-column">
+                        <div class="color-swatch" style="background:var(--color-success)"></div><span
+                            class="text-xs">Success</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UI Components -->
+        <section class="animate-fade-in delay-200">
+            <h2 class="font-xl mb-4 text-secondary">Interactive Components</h2>
+            <div class="bento-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+
+                <!-- Inputs -->
+                <div class="glass-panel p-6 flex-column flex-gap-4">
+                    <h3 class="font-bold">Form Elements</h3>
+                    <input type="text" class="glass-input" placeholder="Enter your name...">
+                    <input type="email" class="glass-input" placeholder="email@example.com">
+                </div>
+
+                <!-- Buttons -->
+                <div class="glass-panel p-6 flex-column flex-gap-4 flex-center">
+                    <h3 class="font-bold">Buttons</h3>
+                    <button class="glass-button">Default Button</button>
+                    <button class="glass-button animate-glow">Glowing Button</button>
+                </div>
+
+                <!-- Card -->
+                <div class="glass-card">
+                    <h3 class="font-bold text-gradient mb-4">Interactive Card</h3>
+                    <p class="text-muted mb-4">Hover over this card to see the lift effect and border glow animation.
+                    </p>
+                    <button class="glass-button" style="font-size: 12px; padding: 4px 12px;">Action</button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Bento Grid Layout -->
+        <section class="animate-fade-in delay-300">
+            <h2 class="font-xl mb-4 text-warning">Bento Grid Layout</h2>
+            <div class="bento-grid">
+
+                <div class="glass-panel p-6 bento-span-2">
+                    <h3 class="font-xl font-bold mb-4">Main Dashboard Stats</h3>
+                    <div class="flex-between">
+                        <div>
+                            <div class="text-muted text-sm">Total Users</div>
+                            <div class="font-2xl text-primary">12,450</div>
+                        </div>
+                        <div>
+                            <div class="text-muted text-sm">Revenue</div>
+                            <div class="font-2xl text-success">$45.2k</div>
+                        </div>
+                        <div>
+                            <div class="text-muted text-sm">Active Now</div>
+                            <div class="font-2xl text-warning">840</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 bento-span-row-2 bg-glass-subtle">
+                    <h3 class="font-bold mb-4">Activity Feed</h3>
+                    <ul class="flex-column flex-gap-2 text-sm text-muted" style="list-style: none;">
+                        <li class="p-4 glass-panel--subtle">User login detected</li>
+                        <li class="p-4 glass-panel--subtle">New task created</li>
+                        <li class="p-4 glass-panel--subtle">System update complete</li>
+                        <li class="p-4 glass-panel--subtle">Warning: High load</li>
+                    </ul>
+                </div>
+
+                <div class="glass-panel p-6">
+                    <h3 class="font-bold">Quick Action</h3>
+                    <p class="text-muted mt-4">Launch a new instance.</p>
+                </div>
+
+                <div class="glass-panel p-6">
+                    <h3 class="font-bold">Settings</h3>
+                    <p class="text-muted mt-4">Configure your workspace.</p>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+</body>
+
+</html>

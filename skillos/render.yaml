@@ -1,0 +1,23 @@
+# Render Blueprint - SkillOS Learning Platform
+# Deploy with: https://render.com/deploy
+
+services:
+  # Frontend Static Site
+  - type: web
+    name: skillos-frontend
+    runtime: static
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/dist
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
