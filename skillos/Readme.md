@@ -7,10 +7,6 @@
 ### 🚀 **[Live Demo: skillos-hackx.onrender.com](https://skillos-4xuc.onrender.com)**  
 *(Note: Please update this link with your actual deployed URL)*
 
-Video Link:
-
-[https://drive.google.com/drive/u/0/folders/15e0NUlDYi9sj8VOX66YcIgb6OzfU81zN](https://drive.google.com/drive/folders/15e0NUlDYi9sj8VOX66YcIgb6OzfU81zN)
-
 ---
 
 ## 🌟 Overview
